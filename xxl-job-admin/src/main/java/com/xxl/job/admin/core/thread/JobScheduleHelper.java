@@ -70,6 +70,7 @@ public class JobScheduleHelper {
                         connAutoCommit = conn.getAutoCommit();
                         conn.setAutoCommit(false);
 
+                        // 利用for update进行获取任务的资格锁定
                         preparedStatement = conn.prepareStatement(  "select * from xxl_job_lock where lock_name = 'schedule_lock' for update" );
                         preparedStatement.execute();
 
@@ -77,6 +78,7 @@ public class JobScheduleHelper {
 
                         // 1、pre read
                         long nowTime = System.currentTimeMillis();
+                        // 获取未来5秒内即将要执行的任务列表
                         List<XxlJobInfo> scheduleList = XxlJobAdminConfig.getAdminConfig().getXxlJobInfoDao().scheduleJobQuery(nowTime + PRE_READ_MS, preReadCount);
                         if (scheduleList!=null && scheduleList.size()>0) {
                             // 2、push time-ring
@@ -88,6 +90,7 @@ public class JobScheduleHelper {
                                     logger.warn(">>>>>>>>>>> xxl-job, schedule misfire, jobId = " + jobInfo.getId());
 
                                     // 1、misfire match
+                                    // match方法：任务有设置过期策略时使用设置的策略，没有设置时则忽略
                                     MisfireStrategyEnum misfireStrategyEnum = MisfireStrategyEnum.match(jobInfo.getMisfireStrategy(), MisfireStrategyEnum.DO_NOTHING);
                                     if (MisfireStrategyEnum.FIRE_ONCE_NOW == misfireStrategyEnum) {
                                         // FIRE_ONCE_NOW 》 trigger
@@ -96,6 +99,7 @@ public class JobScheduleHelper {
                                     }
 
                                     // 2、fresh next
+                                    // 计算下次执行的时间
                                     refreshNextValidTime(jobInfo, new Date());
 
                                 } else if (nowTime > jobInfo.getTriggerNextTime()) {
@@ -109,12 +113,14 @@ public class JobScheduleHelper {
                                     refreshNextValidTime(jobInfo, new Date());
 
                                     // next-trigger-time in 5s, pre-read again
+                                    // 当下次执行时间在5s内时，走此逻辑
                                     if (jobInfo.getTriggerStatus()==1 && nowTime + PRE_READ_MS > jobInfo.getTriggerNextTime()) {
 
                                         // 1、make ring second
                                         int ringSecond = (int)((jobInfo.getTriggerNextTime()/1000)%60);
 
                                         // 2、push time ring
+                                        // 给另一个线程处理
                                         pushTimeRing(ringSecond, jobInfo.getId());
 
                                         // 3、fresh next
@@ -288,6 +294,7 @@ public class JobScheduleHelper {
         List<Integer> ringItemData = ringData.get(ringSecond);
         if (ringItemData == null) {
             ringItemData = new ArrayList<Integer>();
+            // 放进ringData集合中由另一个守护线程处理
             ringData.put(ringSecond, ringItemData);
         }
         ringItemData.add(jobId);

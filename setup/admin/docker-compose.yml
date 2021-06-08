@@ -1,0 +1,29 @@
+version: "3.2"
+services:
+  xxl-job-admin:
+    container_name: xxl-job-admin
+    networks:
+      - xxl-job-admin
+    image: openjdk:8-jdk
+    restart: always
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /opt/xxl-job/admin:/app
+      - /opt/xxl-job/admin/logs:/data/applogs/xxl-job
+    entrypoint:
+      - bash
+      - -c
+      - |
+        echo "Asia/Shanghai" > /etc/timezone
+        cd /app
+        java -jar xxl-job-admin-2.3.0.jar
+    ports:
+      - "9090:9090"
+    deploy:
+      resources:
+        limits:
+          memory: 1024m
+        reservations:
+          memory: 1024m
+networks:
+  xxl-job-admin:

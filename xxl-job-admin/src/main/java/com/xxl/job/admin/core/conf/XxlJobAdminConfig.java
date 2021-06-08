@@ -32,6 +32,11 @@ public class XxlJobAdminConfig implements InitializingBean, DisposableBean {
 
     private XxlJobScheduler xxlJobScheduler;
 
+    /**
+     * 此方法继承自InitializingBean接口
+     * 在spring初始化之后会加载这个bean
+     * @throws Exception e
+     */
     @Override
     public void afterPropertiesSet() throws Exception {
         adminConfig = this;

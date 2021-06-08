@@ -1,0 +1,30 @@
+version: "3.2"
+services:
+  xxl-job-executor-sample-springboot:
+    container_name: xxl-job-executor-sample-springboot
+    networks:
+      - xxl-job-executor-sample-springboot
+    image: openjdk:8-jdk
+    restart: always
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /opt/xxl-job/executor:/app
+      - /opt/xxl-job/executor/logs:/data/applogs/xxl-job
+    entrypoint:
+      - bash
+      - -c
+      - |
+        echo "Asia/Shanghai" > /etc/timezone
+        cd /app
+        java -jar xxl-job-executor-sample-springboot-2.3.0.jar --spring.profiles.active=intest
+    ports:
+      - "9091:9091"
+      - "9999:9999"
+    deploy:
+      resources:
+        limits:
+          memory: 1024m
+        reservations:
+          memory: 1024m
+networks:
+  xxl-job-executor-sample-springboot:

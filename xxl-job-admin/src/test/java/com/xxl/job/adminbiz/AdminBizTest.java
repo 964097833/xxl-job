@@ -10,8 +10,10 @@ import com.xxl.job.core.enums.RegistryConfig;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
@@ -34,7 +36,7 @@ public class AdminBizTest {
         param.setLogId(1);
         param.setHandleCode(XxlJobContext.HANDLE_COCE_SUCCESS);
 
-        List<HandleCallbackParam> callbackParamList = Arrays.asList(param);
+        List<HandleCallbackParam> callbackParamList = Collections.singletonList(param);
 
         ReturnT<String> returnT = adminBiz.callback(callbackParamList);
 
@@ -44,7 +46,6 @@ public class AdminBizTest {
     /**
      * registry executor
      *
-     * @throws Exception
      */
     @Test
     public void registry() throws Exception {
@@ -53,7 +54,7 @@ public class AdminBizTest {
         RegistryParam registryParam = new RegistryParam(RegistryConfig.RegistType.EXECUTOR.name(), "xxl-job-executor-example", "127.0.0.1:9999");
         ReturnT<String> returnT = adminBiz.registry(registryParam);
 
-        assertTrue(returnT.getCode() == ReturnT.SUCCESS_CODE);
+        assertEquals(ReturnT.SUCCESS_CODE, returnT.getCode());
     }
 
     /**
