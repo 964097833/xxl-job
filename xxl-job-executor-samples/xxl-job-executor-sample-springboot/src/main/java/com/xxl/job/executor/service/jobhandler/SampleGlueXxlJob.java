@@ -18,9 +18,9 @@ public class SampleGlueXxlJob {
         return "success";
     }
 
-//    @Scheduled(fixedRate = 1000)
-//    public void demoJobHandler111() throws Exception {
-//        System.out.println("===============定时任务111执行第" + ++count + "次==============");
-//    }
+    @Scheduled(fixedRate = 1000)
+    public void demoJobHandler111() throws Exception {
+        System.out.println("===============定时任务111执行第" + ++count + "次==============");
+    }
 
 }

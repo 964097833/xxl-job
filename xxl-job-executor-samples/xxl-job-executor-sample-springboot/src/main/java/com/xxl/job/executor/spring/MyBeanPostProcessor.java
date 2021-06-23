@@ -1,6 +1,7 @@
 package com.xxl.job.executor.spring;
 
 import com.xxl.job.core.handler.annotation.XxlJob;
+import com.xxl.job.executor.annotation.MyTask;
 import org.springframework.aop.framework.AopInfrastructureBean;
 import org.springframework.aop.framework.AopProxyUtils;
 import org.springframework.beans.BeansException;
@@ -27,7 +28,7 @@ import java.util.concurrent.ScheduledExecutorService;
  * @author yuqiaodi
  * @date 2021/6/21 9:11
  */
-@Configuration
+//@Configuration
 public class MyBeanPostProcessor implements MergedBeanDefinitionPostProcessor, Ordered {
 
     @Override
@@ -43,29 +44,19 @@ public class MyBeanPostProcessor implements MergedBeanDefinitionPostProcessor, O
         // 判断给定的类是否适合携带指定的注解(只要类名不为java.开头和Order类，即为true)
         if (AnnotationUtils.isCandidateClass(targetClass, Arrays.asList(Scheduled.class, Schedules.class))) {
             // 将bean中带有@XxlJob筛选出来
-            Map<Method, XxlJob> xxlJobAnnotatedMethods = MethodIntrospector.selectMethods(targetClass,
-                    new MethodIntrospector.MetadataLookup<XxlJob>() {
+            Map<Method, MyTask> xxlJobAnnotatedMethods = MethodIntrospector.selectMethods(targetClass,
+                    new MethodIntrospector.MetadataLookup<MyTask>() {
                         @Override
-                        public XxlJob inspect(Method method) {
-                            return AnnotatedElementUtils.findMergedAnnotation(method, XxlJob.class);
+                        public MyTask inspect(Method method) {
+                            return AnnotatedElementUtils.findMergedAnnotation(method, MyTask.class);
                         }
                     });
             if (!xxlJobAnnotatedMethods.isEmpty()) {
-                // 再对其筛选出是否同时携带@Scheduled或@Schedules
-                Map<Method, Set<Scheduled>> annotatedMethods = MethodIntrospector.selectMethods(targetClass,
-                        (MethodIntrospector.MetadataLookup<Set<Scheduled>>) method -> {
-                            Set<Scheduled> scheduledMethods = AnnotatedElementUtils.getMergedRepeatableAnnotations(
-                                    method, Scheduled.class, Schedules.class);;
-                            return (!scheduledMethods.isEmpty() ? scheduledMethods : null);
-                        });
-                // 如果该bean同时有同时携带两种注解的方法，则将其替换为null
-                if (!annotatedMethods.isEmpty()) {
-                    /**
-                     * spring在遍历后处理器的过程中，会判断每次处理器返回的bean是否为null
-                     * 如果为null则不执行后序的处理器，直接返回上一个处理器返回的bean
-                     */
-                    return null;
-                }
+                /**
+                 * spring在遍历后处理器的过程中，会判断每次处理器返回的bean是否为null
+                 * 如果为null则不执行后序的处理器，直接返回上一个处理器返回的bean
+                 */
+                return null;
             }
         }
 

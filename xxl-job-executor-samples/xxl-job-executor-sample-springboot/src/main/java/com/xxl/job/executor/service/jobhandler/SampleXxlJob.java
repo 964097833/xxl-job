@@ -2,8 +2,11 @@ package com.xxl.job.executor.service.jobhandler;
 
 import com.xxl.job.core.context.XxlJobHelper;
 import com.xxl.job.core.handler.annotation.XxlJob;
+import com.xxl.job.executor.annotation.MyTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -29,6 +32,7 @@ import java.util.concurrent.TimeUnit;
  * @author xuxueli 2019-12-11 21:52:51
  */
 @Component
+@ComponentScan
 public class SampleXxlJob {
     private static Logger logger = LoggerFactory.getLogger(SampleXxlJob.class);
 
@@ -37,8 +41,10 @@ public class SampleXxlJob {
     /**
      * 1、简单任务示例（Bean模式）
      */
-    @XxlJob("demoJobHandler")
-    @Scheduled(fixedRate = 1000)
+//    @XxlJob("demoJobHandler")
+//    @Scheduled(fixedRate = 1000)
+//    @Async
+    @MyTask(value = "demoJobHandler", fixedRate = 1000)
     public void demoJobHandler() throws Exception {
         System.out.println("===============定时任务执行第" + ++count + "次==============");
     }

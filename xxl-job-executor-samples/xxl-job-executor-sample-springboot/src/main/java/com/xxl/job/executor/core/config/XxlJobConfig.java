@@ -1,13 +1,12 @@
 package com.xxl.job.executor.core.config;
 
-import com.xxl.job.core.executor.impl.XxlJobSpringExecutor;
+import com.xxl.job.executor.custom.CustomSpringExecutor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import javax.annotation.Resource;
 
 /**
  * xxl-job config
@@ -44,9 +43,9 @@ public class XxlJobConfig {
 
 
     @Bean
-    public XxlJobSpringExecutor xxlJobExecutor() {
+    public CustomSpringExecutor xxlJobExecutor() {
         logger.info(">>>>>>>>>>> xxl-job config init.");
-        XxlJobSpringExecutor xxlJobSpringExecutor = new XxlJobSpringExecutor();
+        CustomSpringExecutor xxlJobSpringExecutor = new CustomSpringExecutor();
         xxlJobSpringExecutor.setAdminAddresses(adminAddresses);
         xxlJobSpringExecutor.setAppname(appname);
         xxlJobSpringExecutor.setAddress(address);
