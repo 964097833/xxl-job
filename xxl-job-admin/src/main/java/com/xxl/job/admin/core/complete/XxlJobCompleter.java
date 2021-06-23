@@ -46,6 +46,7 @@ public class XxlJobCompleter {
     private static void finishJob(XxlJobLog xxlJobLog){
 
         // 1、handle success, to trigger child job
+        // 任务执行成功，则在此处触发其对应的子任务
         String triggerChildMsg = null;
         if (XxlJobContext.HANDLE_COCE_SUCCESS == xxlJobLog.getHandleCode()) {
             XxlJobInfo xxlJobInfo = XxlJobAdminConfig.getAdminConfig().getXxlJobInfoDao().loadById(xxlJobLog.getJobId());
@@ -56,7 +57,7 @@ public class XxlJobCompleter {
                 for (int i = 0; i < childJobIds.length; i++) {
                     int childJobId = (childJobIds[i]!=null && childJobIds[i].trim().length()>0 && isNumeric(childJobIds[i]))?Integer.valueOf(childJobIds[i]):-1;
                     if (childJobId > 0) {
-
+                        // 触发的子任务不会带有高级配置信息，且触发类型为PARENT
                         JobTriggerPoolHelper.trigger(childJobId, TriggerTypeEnum.PARENT, -1, null, null, null);
                         ReturnT<String> triggerChildResult = ReturnT.SUCCESS;
 
@@ -68,6 +69,7 @@ public class XxlJobCompleter {
                                 (triggerChildResult.getCode()==ReturnT.SUCCESS_CODE?I18nUtil.getString("system_success"):I18nUtil.getString("system_fail")),
                                 triggerChildResult.getMsg());
                     } else {
+                        // 子任务id不大于0则标识任务id格式错误，记录到日志中
                         triggerChildMsg += MessageFormat.format(I18nUtil.getString("jobconf_callback_child_msg2"),
                                 (i+1),
                                 childJobIds.length,

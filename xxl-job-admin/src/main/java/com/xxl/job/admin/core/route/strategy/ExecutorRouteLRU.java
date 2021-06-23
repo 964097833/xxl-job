@@ -62,6 +62,7 @@ public class ExecutorRouteLRU extends ExecutorRouter {
         }
 
         // load
+        // 由于LinkHashMap自身实现的LRU，所以每次访问第一个key。都是最久未访问的key
         String eldestKey = lruItem.entrySet().iterator().next().getKey();
         String eldestValue = lruItem.get(eldestKey);
         return eldestValue;

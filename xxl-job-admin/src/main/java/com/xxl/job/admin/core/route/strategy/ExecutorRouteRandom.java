@@ -12,6 +12,7 @@ import java.util.Random;
  */
 public class ExecutorRouteRandom extends ExecutorRouter {
 
+    // todo 为什么使用静态Random？
     private static Random localRandom = new Random();
 
     @Override

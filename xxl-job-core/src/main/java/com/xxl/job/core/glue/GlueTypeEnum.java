@@ -1,9 +1,15 @@
 package com.xxl.job.core.glue;
 
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.scheduling.annotation.Schedules;
+
+import javax.annotation.Resource;
+
 /**
  * Created by xuxueli on 17/4/26.
  */
 public enum GlueTypeEnum {
+    @Resource
 
     BEAN("BEAN", false, null, null),
     GLUE_GROOVY("GLUE(Java)", false, null, null),

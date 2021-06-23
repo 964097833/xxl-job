@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -22,6 +23,7 @@ import java.util.List;
  * @author xuxueli 2015-12-19 16:13:16
  */
 @Controller
+@RestController
 @RequestMapping("/jobcode")
 public class JobCodeController {
 	
@@ -43,6 +45,7 @@ public class JobCodeController {
 		}
 
 		// valid permission
+
 		JobInfoController.validPermission(request, jobInfo.getJobGroup());
 
 		// Glue类型-字典

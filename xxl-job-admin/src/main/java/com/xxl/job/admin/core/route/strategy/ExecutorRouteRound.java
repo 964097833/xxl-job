@@ -22,6 +22,7 @@ public class ExecutorRouteRound extends ExecutorRouter {
         // cache clear
         if (System.currentTimeMillis() > CACHE_VALID_TIME) {
             routeCountEachJob.clear();
+            // 缓存一天
             CACHE_VALID_TIME = System.currentTimeMillis() + 1000*60*60*24;
         }
 

@@ -1,5 +1,7 @@
 package com.xxl.job.executorbiz;
 
+import com.xxl.job.admin.core.model.XxlJobInfo;
+import com.xxl.job.admin.core.util.I18nUtil;
 import com.xxl.job.core.biz.ExecutorBiz;
 import com.xxl.job.core.biz.client.ExecutorBizClient;
 import com.xxl.job.core.biz.model.*;
@@ -7,12 +9,16 @@ import com.xxl.job.core.enums.ExecutorBlockStrategyEnum;
 import com.xxl.job.core.glue.GlueTypeEnum;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.springframework.scheduling.annotation.EnableScheduling;
+
+import java.text.MessageFormat;
 
 /**
  * executor api test
  *
  * Created by xuxueli on 17/5/12.
  */
+@EnableScheduling
 public class ExecutorBizTest {
 
     // admin-client
@@ -100,6 +106,49 @@ public class ExecutorBizTest {
 
         // Assert result
         Assertions.assertNotNull(retval);
+    }
+
+    @Test
+    public void trimTest() {
+
+        String str1 = "  ab c  ";
+        System.out.println(str1.length());
+        str1 = str1.trim();
+        System.out.println(str1.length());
+
+    }
+
+    @Test
+    public void aVoid() {
+        // 》ChildJobId valid
+
+        XxlJobInfo jobInfo = new XxlJobInfo();
+        jobInfo.setChildJobId("1111,,2222");
+
+        if (jobInfo.getChildJobId()!=null && jobInfo.getChildJobId().trim().length()>0) {
+            String[] childJobIds = jobInfo.getChildJobId().split(",");
+            for (String childJobIdItem: childJobIds) {
+                if (childJobIdItem!=null && childJobIdItem.trim().length()>0) {
+                    System.out.println(childJobIdItem);
+                } else {
+                    System.out.println("进入else"+childJobIdItem);
+                }
+            }
+
+//            // join , avoid "xxx,,"
+//            String temp = "";
+//            for (String item:childJobIds) {
+//                if (!"".equals(item) && item.length() > 0) {
+//                    temp += it802366qD66
+//                em + ",";
+//                }
+//            }
+//            temp = temp.substring(0, temp.length()-1);
+
+//            System.out.println(temp);
+//            jobInfo.setChildJobId(temp);
+        }
+
     }
 
 }

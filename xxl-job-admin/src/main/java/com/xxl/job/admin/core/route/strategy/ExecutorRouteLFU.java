@@ -58,16 +58,18 @@ public class ExecutorRouteLFU extends ExecutorRouter {
         List<Map.Entry<String, Integer>> lfuItemList = new ArrayList<Map.Entry<String, Integer>>(lfuItemMap.entrySet());
         Collections.sort(lfuItemList, new Comparator<Map.Entry<String, Integer>>() {
             @Override
+            // 以升序的方式排序
             public int compare(Map.Entry<String, Integer> o1, Map.Entry<String, Integer> o2) {
                 return o1.getValue().compareTo(o2.getValue());
             }
         });
 
+        // 获取value最小的地址，将其+1
         Map.Entry<String, Integer> addressItem = lfuItemList.get(0);
         String minAddress = addressItem.getKey();
         addressItem.setValue(addressItem.getValue() + 1);
 
-        return addressItem.getKey();
+        return minAddress;
     }
 
     @Override

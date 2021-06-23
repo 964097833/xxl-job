@@ -61,6 +61,7 @@ public class JobCompleteHelper {
 
 			@Override
 			public void run() {
+				// 每60s从数据库中获取符合条件的日志id
 
 				// wait for JobTriggerPoolHelper-init
 				try {
@@ -74,10 +75,12 @@ public class JobCompleteHelper {
 				// monitor
 				while (!toStop) {
 					try {
-						// 任务结果丢失处理：调度记录停留在 "运行中" 状态超过10min，且对应执行器心跳注册失败不在线，则将本地调度主动标记失败；
+						// 设置状态停留超过的时间为10分钟
 						Date losedTime = DateUtil.addMinutes(new Date(), -10);
+						// 数据库日志中，trigger_code = 200 && handle_code = 0 代表为运行状态
 						List<Long> losedJobIds  = XxlJobAdminConfig.getAdminConfig().getXxlJobLogDao().findLostJobIds(losedTime);
 
+						// 如查询到符合条件的日志，则遍历将其设置为失败，并执行任务执行完成流程
 						if (losedJobIds!=null && losedJobIds.size()>0) {
 							for (Long logId: losedJobIds) {
 
@@ -85,6 +88,7 @@ public class JobCompleteHelper {
 								jobLog.setId(logId);
 
 								jobLog.setHandleTime(new Date());
+								// 将其标记为失败
 								jobLog.setHandleCode(ReturnT.FAIL_CODE);
 								jobLog.setHandleMsg( I18nUtil.getString("joblog_lost_fail") );
 

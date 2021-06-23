@@ -147,9 +147,10 @@ public class JobThread extends Thread{
 							futureThread = new Thread(futureTask);
 							futureThread.start();
 
+							// 在指定时间内尝试获取执行结果。若超时则抛出超时异常
 							Boolean tempResult = futureTask.get(triggerParam.getExecutorTimeout(), TimeUnit.SECONDS);
 						} catch (TimeoutException e) {
-
+							// 打印超时日志
 							XxlJobHelper.log("<br>----------- xxl-job job execute timeout");
 							XxlJobHelper.log(e);
 

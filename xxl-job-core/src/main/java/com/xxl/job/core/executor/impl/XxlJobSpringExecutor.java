@@ -84,6 +84,9 @@ public class XxlJobSpringExecutor extends XxlJobExecutor implements ApplicationC
         // init job handler from method
         String[] beanDefinitionNames = applicationContext.getBeanNamesForType(Object.class, false, true);
         for (String beanDefinitionName : beanDefinitionNames) {
+            if (beanDefinitionName.equals("sampleXxlJob")) {
+                System.out.println(beanDefinitionName);
+            }
             Object bean = applicationContext.getBean(beanDefinitionName);
 
             Map<Method, XxlJob> annotatedMethods = null;   // referred to ：org.springframework.context.event.EventListenerMethodProcessor.processBean
@@ -152,6 +155,7 @@ public class XxlJobSpringExecutor extends XxlJobExecutor implements ApplicationC
 
                 // registry jobhandler
                 registJobHandler(name, new MethodJobHandler(bean, executeMethod, initMethod, destroyMethod));
+
             }
         }
 
